@@ -1,26 +1,27 @@
-import { FormEvent, useRef } from 'react'
+import { FormEvent, useRef, useState } from 'react'
 import { Button, Col, Form, Row, Stack } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import CreatableReactSelect from 'react-select'
-import { NoteData } from './App'
+import { NoteData, Tag } from './App'
 
 type NoteFormProps = {
-  // Used Partial Utility Type to navigate around assignment of null to useRef => code prevents submission of empty fields
-  onSubmit: (data: Partial<NoteData>) => void
+	// Used Partial Utility Type to navigate around assignment of null to useRef => code prevents submission of empty fields
+	onSubmit: (data: Partial<NoteData>) => void
 }
 
 const NoteForm = ({ onSubmit }: NoteFormProps) => {
 	const titleRef = useRef<HTMLInputElement>(null)
 	const markdownRef = useRef<HTMLTextAreaElement>(null)
+	const [selectedTags, setSelectedTags] = useState<Tag[]>([])
 
 	const handleSubmit = (e: FormEvent) => {
-    e.preventDefault()
-    
-    onSubmit({
-      title: titleRef.current?.value,
-      markdown: markdownRef.current?.value,
-      tags: [],
-    })
+		e.preventDefault()
+
+		onSubmit({
+			title: titleRef.current?.value,
+			markdown: markdownRef.current?.value,
+			tags: [],
+		})
 	}
 
 	return (
@@ -36,7 +37,19 @@ const NoteForm = ({ onSubmit }: NoteFormProps) => {
 					<Col>
 						<Form.Group controlId='tags'>
 							<Form.Label>Tags</Form.Label>
-							<CreatableReactSelect isMulti />
+							<CreatableReactSelect
+								isMulti
+								value={selectedTags.map((tag) => {
+									return { label: tag.label, value: tag.id }
+								})}
+								onChange={(tags) => {
+									setSelectedTags(
+										tags.map((tag) => {
+											return { label: tag.label, id: tag.value }
+										})
+									)
+								}}
+							/>
 						</Form.Group>
 					</Col>
 				</Row>

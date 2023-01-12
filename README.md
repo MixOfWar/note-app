@@ -1,12 +1,11 @@
 # Note taking app developed using React & TypeScript. 
 
 ## Features: 
-- Track notes like a task application
-- Add tags to notes for organization
+- Take notes with a title, body, and tag/category for organization
+- Notes are Mardown supported
 - Search notes that have been made
 - Search tags that have been made 
 - Edit notes
-- Note's are compatible with markdown for more dynamic note taking
 
 ## Technologies Used: 
 - Bootstrap
