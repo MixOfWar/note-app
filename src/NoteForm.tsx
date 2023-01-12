@@ -1,27 +1,32 @@
 import { FormEvent, useRef, useState } from 'react'
 import { Button, Col, Form, Row, Stack } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
-import CreatableReactSelect from 'react-select'
+import { Link, useNavigate } from 'react-router-dom'
+import CreatableReactSelect from 'react-select/creatable'
+import { v4 as uuidV4 } from 'uuid'
 import { NoteData, Tag } from './App'
 
 type NoteFormProps = {
-	// Used Partial Utility Type to navigate around assignment of null to useRef => code prevents submission of empty fields
-	onSubmit: (data: Partial<NoteData>) => void
+	onSubmit: (data: NoteData) => void
+	onAddTag: (tag: Tag) => void
+	availableTags: Tag[]
 }
 
-const NoteForm = ({ onSubmit }: NoteFormProps) => {
+const NoteForm = ({ onSubmit, onAddTag, availableTags }: NoteFormProps) => {
 	const titleRef = useRef<HTMLInputElement>(null)
 	const markdownRef = useRef<HTMLTextAreaElement>(null)
 	const [selectedTags, setSelectedTags] = useState<Tag[]>([])
+	const navigate = useNavigate()
 
 	const handleSubmit = (e: FormEvent) => {
 		e.preventDefault()
 
 		onSubmit({
-			title: titleRef.current?.value,
-			markdown: markdownRef.current?.value,
-			tags: [],
+			title: titleRef.current!.value,
+			markdown: markdownRef.current!.value,
+			tags: selectedTags,
 		})
+
+		navigate('..')
 	}
 
 	return (
@@ -38,15 +43,23 @@ const NoteForm = ({ onSubmit }: NoteFormProps) => {
 						<Form.Group controlId='tags'>
 							<Form.Label>Tags</Form.Label>
 							<CreatableReactSelect
+								onCreateOption={(label) => {
+									const newTag = { id: uuidV4(), label }
+									onAddTag(newTag)
+									setSelectedTags((prev) => [...prev, newTag])
+								}}
 								isMulti
 								value={selectedTags.map((tag) => {
+									return { label: tag.label, value: tag.id }
+								})}
+								options={availableTags.map((tag) => {
 									return { label: tag.label, value: tag.id }
 								})}
 								onChange={(tags) => {
 									setSelectedTags(
 										tags.map((tag) => {
 											return { label: tag.label, id: tag.value }
-										})
+										}),
 									)
 								}}
 							/>
