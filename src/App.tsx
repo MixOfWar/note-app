@@ -6,31 +6,8 @@ import useLocalStorage from './useLocalStorage'
 import NewNote from './NewNote'
 import NoteList from './NoteList'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import { NoteData, RawNote, Tag } from './types'
 
-export type Note = {
-	id: string
-} & NoteData
-
-export type RawNote = {
-	id: string
-} & RawNoteData
-
-export type RawNoteData = {
-	title: string
-	markdown: string
-	tagIds: string[]
-}
-
-export type NoteData = {
-	title: string
-	markdown: string
-	tags: Tag[]
-}
-
-export type Tag = {
-	id: string
-	label: string
-}
 const App = () => {
 	const [notes, setNotes] = useLocalStorage<RawNote[]>('NOTES', [])
 	const [tags, setTags] = useLocalStorage<Tag[]>('TAGS', [])

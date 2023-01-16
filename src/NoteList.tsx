@@ -2,19 +2,9 @@ import { Badge, Button, Card, Col, Form, Row, Stack } from 'react-bootstrap'
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import ReactSelect from 'react-select'
-import { Tag } from './App'
 import styles from './NoteList.module.css'
+import { NoteListProps, SimplifiedNote, Tag } from './types'
 
-type SimplifiedNote = {
-	tags: Tag[]
-	title: string
-	id: string
-}
-
-type NoteListProps = {
-	availableTags: Tag[]
-	notes: SimplifiedNote[]
-}
 
 const NoteList = ({ availableTags, notes }: NoteListProps) => {
 	const [selectedTags, setSelectedTags] = useState<Tag[]>([])
