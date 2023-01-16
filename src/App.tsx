@@ -1,16 +1,20 @@
-import { useMemo } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
+import { NoteData, RawNote, Tag } from './utils/types'
+import useLocalStorage from './utils/useLocalStorage'
 import { Container } from 'react-bootstrap'
-import { v4 as uuidV4 } from 'uuid'
-import useLocalStorage from './useLocalStorage'
-import NewNote from './NewNote'
-import NoteList from './NoteList'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import { NoteData, RawNote, Tag } from './types'
+import NoteLayout from './pages/NoteLayout'
+import { v4 as uuidV4 } from 'uuid'
+import { useMemo } from 'react'
+import NewNote from './pages/NewNote'
+import EditNote from './pages/EditNote'
+import NoteList from './pages/NoteList'
+import Note from './components/Note'
+import { defaultNoteData, defaultTagData } from './utils/defaultData'
 
 const App = () => {
-	const [notes, setNotes] = useLocalStorage<RawNote[]>('NOTES', [])
-	const [tags, setTags] = useLocalStorage<Tag[]>('TAGS', [])
+  const [notes, setNotes] = useLocalStorage<RawNote[]>('NOTES', [defaultNoteData])
+  const [tags, setTags] = useLocalStorage<Tag[]>('TAGS', [...defaultTagData])
 
 	const notesWithTags = useMemo(() => {
 		return notes.map((note) => {
@@ -28,18 +32,61 @@ const App = () => {
 				{ ...data, id: uuidV4(), tagIds: tags.map((tag) => tag.id) },
 			]
 		})
-	}
+  }
+
+  const onUpdateNote = (id: string, { tags, ...data }: NoteData) => {
+    setNotes(prevNotes => {
+      return prevNotes.map(note => {
+        if (note.id === id) {
+          return { ...note, ...data, tagIds: tags.map(tag => tag.id) }
+        } else {
+          return note
+        }
+      })
+    })
+  }
+
+  const onDeleteNote = (id: string) => {
+    setNotes(prevNotes => {
+      return prevNotes.filter(note => note.id !== id)
+    })
+  }
 
 	const addTag = (tag: Tag) => {
 		setTags((prev) => [...prev, tag])
-	}
+  }
+
+  const updateTag = (id: string, label: string) => {
+    setTags(prevTags => {
+      return prevTags.map(tag => {
+        if (tag.id === id) {
+          return { ...tag, label }
+        } else {
+          return tag;
+        }
+      })
+    })
+  }
+
+  const deleteTag = (id: string) => {
+    setTags(prevTags => {
+      return prevTags.filter(tag => tag.id !== id)
+    })
+  }
 
 	return (
 		<Container className='my-4'>
 			<Routes>
 				<Route
 					path='/'
-					element={<NoteList availableTags={tags} notes={notesWithTags} />}
+          element={
+            <NoteList
+              notes={notesWithTags}
+              availableTags={tags}
+              onUpdateTag={updateTag}
+              onDeleteTag={deleteTag}
+            />
+          }
 				/>
 				<Route
 					path='/new'
@@ -51,9 +98,17 @@ const App = () => {
 						/>
 					}
 				/>
-				<Route path='/:id' element={<h1>item</h1>}>
-					<Route index element={<h1>Show</h1>} />
-					<Route path='edit' element={<h1>Edit</h1>} />
+        <Route path='/:id' element={<NoteLayout notes={notesWithTags} />}>
+          <Route index element={<Note onDelete={onDeleteNote} />} />
+          <Route
+            path='edit'
+            element={
+              <EditNote
+                onSubmit={onUpdateNote}
+                onAddTag={addTag}
+                availableTags={tags}
+              />
+            } />
 				</Route>
 				<Route path='*' element={<Navigate to='/' />} />
 			</Routes>
