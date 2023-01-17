@@ -15,7 +15,7 @@
     "removeComments": true,
     "forceConsistentCasingInFileNames": true,
     "module": "ESNext",
-    "rootDir": "./src*",
+    "rootDir": "./src",
     "outDir": "./dist",
     "moduleResolution": "Node",
     "resolveJsonModule": true,
@@ -24,6 +24,7 @@
     "noEmitOnError": true,
     "jsx": "react-jsx"
   },
-  "include": ["src"],
+  "files": ["src/main.tsx", "src/App.tsx", "src/utils/defaultData.ts", "src/utils/types.ts", "src/utils/useLocalStorage.tsx", "src/pages/EditNote.tsx", "src/pages/NewNote.tsx", "src/pages/NoteList.tsx", "src/components/EditTagsModal.tsx", "src/components/Note.tsx", "src/components/NoteCard.tsx", "src/components/NoteForm.tsx", "src/components/NoteLayout.tsx"],
+  "include": ["src", "src/*"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
