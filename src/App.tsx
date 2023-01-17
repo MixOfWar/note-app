@@ -1,21 +1,23 @@
+import { defaultNoteData, defaultTagData } from './utils/defaultData'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { NoteData, RawNote, Tag } from './utils/types'
 import useLocalStorage from './utils/useLocalStorage'
 import { Container } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import NoteLayout from './pages/NoteLayout'
-import { v4 as uuidV4 } from 'uuid'
-import { useMemo } from 'react'
+import NoteLayout from './components/NoteLayout'
 import NewNote from './pages/NewNote'
 import EditNote from './pages/EditNote'
 import NoteList from './pages/NoteList'
 import Note from './components/Note'
-import { defaultNoteData, defaultTagData } from './utils/defaultData'
+import { v4 as uuidV4 } from 'uuid'
+import { useMemo } from 'react'
 
 const App = () => {
+  // set default data
   const [notes, setNotes] = useLocalStorage<RawNote[]>('NOTES', [defaultNoteData])
   const [tags, setTags] = useLocalStorage<Tag[]>('TAGS', [...defaultTagData])
 
+  // for retrieving current note ids to ready for storage of RawNote data
 	const notesWithTags = useMemo(() => {
 		return notes.map((note) => {
 			return {

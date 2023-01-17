@@ -7,7 +7,6 @@ const NoteLayout = ({ notes }: NoteLayoutProps) => {
 
   if (note == null) return <Navigate to='/' replace />
 
-
   return <Outlet context={note} />
 }
 

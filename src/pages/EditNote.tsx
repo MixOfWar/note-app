@@ -1,9 +1,6 @@
-import { Badge, Button, Col, Row, Stack } from "react-bootstrap";
-import ReactMarkdown from "react-markdown";
-import { Link } from "react-router-dom";
-import { useNote } from "./NoteLayout";
-import { EditNoteProps } from "../utils/types";
 import NoteForm from "../components/NoteForm";
+import { EditNoteProps } from "../utils/types";
+import { useNote } from "../components/NoteLayout";
 
 const EditNote = ({ onSubmit, onAddTag, availableTags }: EditNoteProps) => {
   const note = useNote();
